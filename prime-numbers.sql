@@ -1,5 +1,6 @@
 -- To-Do: Write a SELECT query that returns all the prime numbers less than 100.
 -- Solution: Trial Division – check if prime candidate % divisor = 0 for each divisor from {2 ... sqrt(prime candidate)}.
+-- Issues: Notable slowdown even with relatively small upper bounds.
 
 WITH RECURSIVE numbers AS
 (
@@ -18,9 +19,11 @@ FROM numbers
 WHERE n > 1
   AND NOT EXISTS
 (
-  SELECT
-    1
+  SELECT 1
   FROM numbers divisors
   WHERE (divisors.n > 1 AND divisors.n <= SQRT(numbers.n))
     AND numbers.n % divisors.n = 0
 );
+
+-- T-SQL: set the number of recursion levels
+-- OPTION (MAXRECURSION 0)
