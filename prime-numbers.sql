@@ -1,6 +1,6 @@
 -- To-Do: Write a SELECT query that returns all the prime numbers less than 100.
--- Solution: Trial Division – check if prime candidate % divisor = 0 for each divisor from {2 ... sqrt(prime candidate)}.
--- Issues: Notable slowdown even with relatively small upper bounds.
+-- Solution: Trial Division − check if prime candidate % divisor = 0 for each divisor from {2 ... sqrt(prime candidate)}.
+-- Issues: Query runtime.
 
 WITH RECURSIVE numbers AS
 (
