@@ -17,12 +17,11 @@ SELECT
   n AS prime
 FROM numbers
 WHERE n > 1
-  AND NOT EXISTS
-(
-  SELECT 1
-  FROM numbers divisors
-  WHERE (divisors.n > 1 AND divisors.n <= SQRT(numbers.n))
-    AND numbers.n % divisors.n = 0
+  AND NOT EXISTS (
+SELECT 1
+FROM numbers divisors
+WHERE (divisors.n > 1 AND divisors.n <= SQRT(numbers.n))
+  AND numbers.n % divisors.n = 0
 );
 
 -- T-SQL: set the number of recursion levels
