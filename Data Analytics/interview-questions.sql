@@ -89,5 +89,27 @@ SELECT
   depname,
   empno,
   salary,
-  DENSE_RANK() OVER(PARTITION BY depname ORDER BY salary DESC) AS salary_rank
+  DENSE_RANK() OVER(PARTITION BY depname ORDER BY salary DESC) AS salary_dep_rank
 FROM salaries;
+
+
+-- Other Medium/Hard SQL Practice Problems
+
+-- #2: CROSS JOIN (multi-part)
+-- Part 1. Write a query to get the pairs of states with total streaming amounts within 1000 of each other.
+SELECT
+  t1.state AS state_a,
+  t2.state AS state_b
+FROM state_streams t1
+CROSS JOIN state_streams t2
+WHERE t1.state <> t2.state
+  AND ABS(t1.total_streams - t2.total_streams) < 1000;
+
+-- Part 2. How could you modify the SQL from the solution to Part 1 of this question so that duplicates are removed?
+SELECT
+  t1.state AS state_a,
+  t2.state AS state_b
+FROM state_streams t1
+CROSS JOIN state_streams t2
+WHERE t1.state < t2.state
+  AND ABS(t1.total_streams - t2.total_streams) < 1000;
