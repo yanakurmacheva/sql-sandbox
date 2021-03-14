@@ -1,4 +1,6 @@
--- #1 Month-over-Month Percent Change
+-- Self-Join Practice Problems (*some of these were solved using window functions or CASE statements)
+
+-- #1: Month-over-Month Percent Change
 -- Find the month-over-month percentage change for monthly active users (MAU).
 SELECT
   month,
@@ -12,7 +14,7 @@ FROM (
   GROUP BY DATE_TRUNC('month', date)
 ) m;
 
--- #2 Tree Structure Labeling
+-- #2: Tree Structure Labeling
 -- Write SQL such that we label each node as 'leaf', 'inner', or 'root'.
 SELECT
   node,
@@ -41,3 +43,18 @@ JOIN unique_logins p -- previous month
   ON c.user_id = p.user_id
   AND c.month = p.month + '1 month'::interval
 GROUP BY c.month;
+
+-- #4: Cumulative Sums
+-- Write a query to get cumulative cash flow for each day.
+SELECT
+  date,
+  SUM(cash_flow) OVER(ORDER BY date) AS cumulative_cf
+FROM transactions;
+
+-- #5: Rolling Averages
+-- Write a query to get 7-day rolling average of daily signups.
+SELECT
+  date,
+  sign_ups,
+  AVG(sign_ups) OVER(ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS avg_over_7_days
+FROM signups;
