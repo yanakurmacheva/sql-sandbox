@@ -59,6 +59,20 @@ SELECT
   AVG(sign_ups) OVER(ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS avg_over_7_days
 FROM signups;
 
+-- #6: Multiple Join Conditions
+-- Write a query to get the response time per email (id) sent to zach@g.com (subjects are unique).
+SELECT
+  e1.id,
+  e1.from AS sender,
+  MIN(e2.timestamp - e1.timestamp) AS response_time -- Zach wrote back in ...
+FROM emails e1
+JOIN emails e2
+  ON e1.subject = e2.subject
+  AND e1.to = e2.from AND e1.from = e2.to
+  AND e1.timestamp < e2.timestamp
+WHERE e1.to = 'zach@g.com'
+GROUP BY e1.id, e1.from;
+
 
 -- Window Function Practice Problems
 
