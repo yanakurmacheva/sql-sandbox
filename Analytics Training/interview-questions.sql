@@ -109,6 +109,21 @@ FROM salaries;
 
 -- Other Medium/Hard SQL Practice Problems
 
+-- #1: Histograms
+-- Write a query to count the number of sessions that fall into bands of size 5.
+SELECT
+  CONCAT(lower_bound, '-', upper_bound) AS bucket,
+  COUNT(*)
+FROM (
+  SELECT
+    length_seconds,
+    FLOOR(length_seconds / 5.0) * 5 AS lower_bound,
+    FLOOR(length_seconds / 5.0) * 5 + 5 AS upper_bound
+  FROM sessions
+) labels
+GROUP BY lower_bound, upper_bound
+ORDER BY lower_bound;
+
 -- #2: CROSS JOIN (multi-part)
 -- Part 1. Write a query to get the pairs of states with total streaming amounts within 1000 of each other.
 SELECT
@@ -127,3 +142,27 @@ FROM state_streams t1
 CROSS JOIN state_streams t2
 WHERE t1.state < t2.state
   AND ABS(t1.total_streams - t2.total_streams) < 1000;
+
+-- #3: Advancing Counting
+-- Write a query to count the number of users in each class (a user with both labels gets sorted into 'b').
+WITH deduplicated_users AS
+(
+  SELECT
+    DISTINCT user,
+    class
+  FROM table
+)
+
+SELECT
+  class,
+  COUNT(DISTINCT user)
+FROM (
+  SELECT
+    user,
+    CASE
+      WHEN COUNT(*) OVER(PARTITION BY user) > 1 THEN 'b'
+      ELSE class
+    END AS class
+  FROM deduplicated_users
+) relabelled_users
+GROUP BY class;
