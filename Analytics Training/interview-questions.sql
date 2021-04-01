@@ -47,6 +47,28 @@ LEFT JOIN unique_logins c -- current month
 WHERE p.month <> (SELECT MAX(month) FROM unique_logins)
 GROUP BY p.month;
 
+-- Part 3. Create a table that contains the number of reactivated users per month.
+WITH unique_logins AS
+(
+  SELECT
+    DISTINCT user_id,
+    DATE_TRUNC('month', date) AS month
+  FROM logins
+)
+
+SELECT
+  c.month AS month,
+  COUNT(DISTINCT c.user_id) AS reactivated_users
+FROM unique_logins c -- current month
+JOIN unique_logins e -- months before the previous month
+  ON c.user_id = e.user_id
+  AND c.month >= e.month + '2 months'::interval
+LEFT JOIN unique_logins p -- previous month
+  ON c.user_id = p.user_id
+  AND c.month = p.month + '1 month'::interval
+WHERE p.month IS NULL
+GROUP BY c.month;
+
 -- #4: Cumulative Sums
 -- Write a query to get cumulative cash flow for each day.
 SELECT
