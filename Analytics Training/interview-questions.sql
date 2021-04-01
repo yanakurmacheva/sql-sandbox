@@ -27,6 +27,7 @@ FROM tree;
 
 -- #3: Retained Users Per Month (multi-part)
 -- Part 1. Write a query that gets the number of retained users per month.
+-- Part 2. Write a query to find the number of churned users.
 WITH unique_logins AS
 (
   SELECT
@@ -36,13 +37,15 @@ WITH unique_logins AS
 )
 
 SELECT
-  c.month,
-  COUNT(*) AS retained_users
-FROM unique_logins c -- current month
-JOIN unique_logins p -- previous month
-  ON c.user_id = p.user_id
-  AND c.month = p.month + '1 month'::interval
-GROUP BY c.month;
+  p.month + '1 month'::interval AS month,
+  COUNT(c.user_id) AS retained_users,
+  COUNT(*) - COUNT(c.user_id) AS churned_users
+FROM unique_logins p -- previous month
+LEFT JOIN unique_logins c -- current month
+  ON p.user_id = c.user_id
+  AND p.month = c.month - '1 month'::interval
+WHERE p.month <> (SELECT MAX(month) FROM unique_logins)
+GROUP BY p.month;
 
 -- #4: Cumulative Sums
 -- Write a query to get cumulative cash flow for each day.
