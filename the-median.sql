@@ -30,14 +30,13 @@ WITH wh13_salaries AS
   SELECT
     salary
   FROM Employees
-  WHERE year = 2013 AND salary <> 0
-)
+  WHERE [year] = 2013 AND salary <> 0
+),
 
-SELECT
-  AVG(value) AS median
-FROM (
+     middle_values AS 
+(
   SELECT
-    MAX(salary) AS value
+    MAX(salary) AS [value]
   FROM (
     SELECT
       PERCENT_RANK() OVER(ORDER BY salary) AS pct_rank,
@@ -55,4 +54,8 @@ FROM (
     FROM wh13_salaries
   ) wh13_rank_desc
   WHERE pct_rank <= 0.5
-) middle_values;
+)  
+
+SELECT
+  AVG([value]) AS median
+FROM middle_values;
