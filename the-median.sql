@@ -2,18 +2,18 @@
 -- The median annual salary of White House staffers in 2013.
 
 CREATE TABLE Employees (
-  [year] int,
-  president char(10),
-  last_name varchar(30),
-  first_name varchar(20),
-  middle_name char(2),
-  suffix char(3),
-  full_name varchar(50),
-  [status] char(8),
-  salary money,
-  pay_basis char(10),
-  position_title varchar(200),
-  white_house_review char(20)
+    [year] int,
+    president char(10),
+    last_name varchar(30),
+    first_name varchar(20),
+    middle_name char(2),
+    suffix char(3),
+    full_name varchar(50),
+    [status] char(8),
+    salary money,
+    pay_basis char(10),
+    position_title varchar(200),
+    white_house_review char(20)
 )
 GO
 
@@ -33,7 +33,7 @@ WITH wh13_salaries AS
   WHERE [year] = 2013 AND salary <> 0
 ),
 
-     middle_values AS 
+     middle_values AS
 (
   SELECT
     MAX(salary) AS [value]
@@ -54,7 +54,7 @@ WITH wh13_salaries AS
     FROM wh13_salaries
   ) wh13_rank_desc
   WHERE pct_rank <= 0.5
-)  
+)
 
 SELECT
   AVG([value]) AS median
