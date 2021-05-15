@@ -1,7 +1,7 @@
 -- https://github.com/storydrivendatasets/white_house_salaries
 -- The median annual salary of White House staffers in 2013.
 
-CREATE TABLE Employees (
+CREATE TABLE employees (
     [year] int,
     president char(10),
     last_name varchar(30),
@@ -17,7 +17,7 @@ CREATE TABLE Employees (
 )
 GO
 
-BULK INSERT Employees
+BULK INSERT employees
 FROM 'full/path/to/sql-sandbox/datasets/white_house_salaries.csv'
 WITH (
   FIRSTROW = 2,
@@ -25,15 +25,15 @@ WITH (
 )
 GO
 
-WITH wh13_salaries AS
+WITH salaries AS
 (
   SELECT
     salary
-  FROM Employees
+  FROM employees
   WHERE [year] = 2013 AND salary <> 0
 ),
 
-     middle_values AS
+     middle_salaries AS
 (
   SELECT
     MAX(salary) AS [value]
@@ -41,8 +41,8 @@ WITH wh13_salaries AS
     SELECT
       PERCENT_RANK() OVER(ORDER BY salary) AS pct_rank,
       salary
-    FROM wh13_salaries
-  ) wh13_rank
+    FROM salaries
+  ) ranked
   WHERE pct_rank <= 0.5
   UNION ALL
   SELECT
@@ -51,11 +51,11 @@ WITH wh13_salaries AS
     SELECT
       PERCENT_RANK() OVER(ORDER BY salary DESC) AS pct_rank,
       salary
-    FROM wh13_salaries
-  ) wh13_rank_desc
+    FROM salaries
+  ) ranked_desc
   WHERE pct_rank <= 0.5
 )
 
 SELECT
-  AVG([value]) AS median
-FROM middle_values;
+  AVG([value]) AS median_salary
+FROM middle_salaries;
